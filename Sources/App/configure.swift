@@ -52,6 +52,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
   
   services.register(databases)
   
+  
   /// Configure migrations
   var migrations = MigrationConfig()
   migrations.add(model: User.self, database: .mysql)
@@ -63,10 +64,16 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
   
   config.prefer(LeafRenderer.self, for: ViewRenderer.self)
   
-  //  config.prefer(MemoryKeyedCache.self, for: KeyedCache.self)
-  config.prefer(DatabaseKeyedCache<ConfiguredDatabase<RedisDatabase>>.self, for: KeyedCache.self)
-  config.prefer(DictionaryKeyedCache.self, for: KeyedCache.self)
+//    config.prefer(MemoryKeyedCache.self, for: KeyedCache.self)
+//  config.prefer(DictionaryKeyedCache.self, for: KeyedCache.self)
+//  config.prefer(DatabaseKeyedCache<ConfiguredDatabase<RedisDatabase>>.self, for: KeyedCache.self)
+//
   
+  services.register(KeyedCache.self) {container -> DatabaseKeyedCache<ConfiguredDatabase<RedisDatabase>> in
+    return try container.keyedCache(for: .redis)
+  }
+  
+  config.prefer(DatabaseKeyedCache<ConfiguredDatabase<RedisDatabase>>.self, for: KeyedCache.self)
   
   /// Register routes to the router
   let router = EngineRouter.default()

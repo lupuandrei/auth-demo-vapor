@@ -17,7 +17,7 @@ final class WebsiteBaseController: RouteCollection {
     
     // Test save to session
     try req.session()["maskedUser"] = "Andrei Lupu"
-print("test")
+    print("test")
     
     // Test save to REDIS
     let _ = RedisClient.connect(on: req) { (error) in
